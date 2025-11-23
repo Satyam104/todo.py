@@ -1,1 +1,48 @@
+# Simple To-Do List
+# Features: add, list, complete, delete, save/load
+# code started
+import json, os
 
+FILE = "tasks.json"
+
+def load():
+    return json.load(open(FILE)) if os.path.exists(FILE) else []
+
+def save(tasks):
+    json.dump(tasks, open(FILE, "w"), indent=2)
+
+def show(tasks):
+    if not tasks:
+        print("No tasks."); return
+    for i, t in enumerate(tasks, 1):
+        status = "✔" if t["done"] else "✗"
+        print(f"{i}. [{status}] {t['title']}")
+
+def main():
+    tasks = load()
+    while True:
+        print("1.Add  2.List  3.Complete  4.Delete  0.Exit")
+        c = input("Choose: ")
+        if c == "1":
+            title = input("Task: ")
+            tasks.append({"title": title, "done": False})
+            save(tasks)
+        elif c == "2":
+            show(tasks)
+        elif c == "3":
+            show(tasks)
+            n = int(input("Complete which #: "))
+            tasks[n-1]["done"] = True
+            save(tasks)
+        elif c == "4":
+            show(tasks)
+            n = int(input("Delete which #: "))
+            tasks.pop(n-1)
+            save(tasks)
+        elif c == "0":
+            break
+        else:
+            print("Invalid choice.")
+
+if __name__ == "__main__":
+    main()
