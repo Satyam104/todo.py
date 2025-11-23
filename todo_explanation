@@ -1,1 +1,68 @@
+# Simple To-Do List (Short Version)
+# Features: add, list, complete, delete, save/load
 
+import json, os
+
+# File where tasks will be stored
+FILE = "tasks.json"
+
+# Load tasks from JSON file (if file exists)
+def load():
+    return json.load(open(FILE)) if os.path.exists(FILE) else []
+
+# Save tasks to JSON file
+def save(tasks):
+    json.dump(tasks, open(FILE, "w"), indent=2)
+
+# Display all tasks
+# Shows index, completion status, and title
+def show(tasks):
+    if not tasks:
+        print("No tasks.")
+        return
+    for i, t in enumerate(tasks, 1):
+        status = "✔" if t["done"] else "✗"  # Mark complete or incomplete
+        print(f"{i}. [{status}] {t['title']}")
+
+# Main program loop
+def main():
+    tasks = load()  # Load previous tasks
+    while True:
+        # Menu displayed to user
+        print("\n1.Add  2.List  3.Complete  4.Delete  0.Exit")
+        c = input("Choose: ")  # User choice
+
+        # Add new task
+        if c == "1":
+            title = input("Task: ")
+            tasks.append({"title": title, "done": False})  # New task dictionary
+            save(tasks)
+
+        # List all tasks
+        elif c == "2":
+            show(tasks)
+
+        # Mark a task as complete
+        elif c == "3":
+            show(tasks)  # Show tasks so user knows indices
+            n = int(input("Complete which #: "))
+            tasks[n-1]["done"] = True  # Mark selected task done
+            save(tasks)
+
+        # Delete a task
+        elif c == "4":
+            show(tasks)
+            n = int(input("Delete which #: "))
+            tasks.pop(n-1)  # Remove selected task
+            save(tasks)
+
+        # Exit program
+        elif c == "0":
+            break
+
+        # If user enters invalid option
+        else:
+            print("Invalid choice.")
+
+# Run program\ if __name__ == "__main__":
+    main()
